@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.Schedule.dao.ScheduleDao">
+	<select id="maxNum" resultType="int">
+		select nvl(max(num), 0) from Schedule
+	</select>
+	
+	<insert id="insertData" parameterType="Schedule">
+		insert into Schedule 
+		values(#{num}, #{title}, #{name}, #{pwd}, #{content}, #{start_time}, #{end_time}, sysdate)
+	</insert>
+	
+	<select id="getDataCount" parameterType="map" resultType="int">
+		select nvl(count(*), 0) from schedule where ${searchKey} like '%' || #{searchValue} || '%'
+	</select>
+	
+	<select id="getLists" parameterType="map" resultType="Schedule">
+		select * from(
+    	select rownum rnum, data.* from (
+        	select num, name, title, start_time, to_char(create_date, 'YYYY-MM-DD') create_date 
+        	from Schedule
+        	where ${searchKey} like '%' || #{searchValue} || '%'
+        	order by num asc
+    		) data
+		)
+		<![CDATA[
+		where rnum >= #{start} and rnum <= #{end}
+		]]>
+	</select>
+	
+	<select id="getReadData" parameterType="int" resultType="Schedule">
+		select * from schedule where num = #{num}
+	</select>
+	
+	<update id="updateData" parameterType="Schedule">
+		update Schedule set name = #{name}, pwd = #{pwd}, start_time = #{start_time}, title = #{title}, content = #{content} where num = #{num}		
+	</update>
+	
+	<delete id="deleteData" parameterType="int">
+		delete Schedule  where num = #{num}
+	</delete>
+</mapper>
+
+

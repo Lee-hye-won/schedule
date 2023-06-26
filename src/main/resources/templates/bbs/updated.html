@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<link rel="stylesheet" type="text/css" href="css/created.css" />
+</th:block>
+
+<div layout:fragment="content" id="bbs">
+	<form action="/updated_ok" method="post" name="myForm">
+		<div id="bbsCreated">
+
+			<div class="bbsCreated_bottomLine">
+				<dl>
+					<dt>제&nbsp;&nbsp;&nbsp;&nbsp;목</dt>
+					<dd>
+						<input type="text" name="title" size="60" maxlength="100"
+							class="boxTF" th:value="${schedule.title}" />
+					</dd>
+				</dl>
+			</div>
+
+			<div class="bbsCreated_bottomLine">
+				<dl>
+					<dt>작 성 자</dt>
+					<dd>
+						<input type="text" name="name" size="35" maxlength="20"
+							th:value="${schedule.name}" class="boxTF" />
+					</dd>
+				</dl>
+			</div>
+
+			<div class="bbsCreated_bottomLine">
+				<dl>
+					<dt>시작시간</dt>
+					<dd>
+						<input type="text" name="start_time" size="35" maxlength="50"
+							th:value="${schedule.start_time}" class="boxTF" />
+					</dd>
+				</dl>
+			</div>
+
+			<div id="bbsCreated_content">
+				<dl>
+					<dt>내&nbsp;&nbsp;&nbsp;&nbsp;용</dt>
+					<dd>
+						<textarea rows="12" cols="63" name="content"
+							th:text="${schedule.content}" class="boxTA"></textarea>
+					</dd>
+				</dl>
+			</div>
+
+			<div class="bbsCreated_noLine">
+				<dl>
+					<dt>패스워드</dt>
+					<dd>
+						<input type="password" name="pwd" size="35" maxlength="7"
+							th:value="${schedule.pwd}" class="boxTF" />
+					</dd>
+				</dl>
+			</div>
+
+		</div>
+
+		<div id="bbsCreated_footer">
+			<input type="hidden" name="num" th:value="${schedule.num}" /> <input
+				type="hidden" name="pageNum" th:value="${pageNum}" /> <input
+				type="hidden" name="searchKey" th:value="${searchKey}" /> <input
+				type="hidden" name="searchValue" th:value="${searchValue}" /> <input
+				type="button" value=" 수정하기 " class="btn2" onclick="sendIt();" /> <input
+				type="button" value=" 수정취소 " class="btn2"
+				th:onclick="|location.href='list?@{${params}}'|" />
+		</div>
+
+	</form>
+</div>
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		function sendIt() {
+			var f = document.myForm; 
+
+			// 제목에 대한 검사
+			var str = f.title.value; 
+			str = str.trim(); 
+
+			if (!str) {
+				alert("제목을 입력하세요.");
+				f.title.focus(); // 제목칸으로 마우스 포커스가 잡히도록
+				return;
+			}
+
+			// 이름에 대한 검사 
+			str = f.name.value;
+			str = str.trim();
+
+			if (!str) {
+				alert("이름을 입력하세요.");
+				f.name.focus(); // 작성자칸으로 마우스 포커스가 잡히도록
+				return;
+			}
+
+			// 이메일에 대한 검사(유효성검사도 필요함)
+			str = f.start_time.value;
+			str = str.trim();
+
+			if (!str) {
+				if (!isValidEmail(str)) { //util.js에 입력한 유효성검사 함수
+					alert("정상적인 이메일형식이 아닙니다.");
+					f.start_time.focus();
+					return;
+				}
+			}
+
+			//내용에 대한 검사
+			str = f.content.value;
+			str = str.trim();
+
+			if (!str) {
+				alert("내용을 입력하세요.");
+				f.content.focus(); // 작성자칸으로 마우스 포커스가 잡히도록
+				return;
+			}
+
+			//패스워드에 대한 검사
+			str = f.pwd.value;
+			str = str.trim();
+
+			if (!str) {
+				alert("패스워드를 입력하세요.");
+				f.pwd.focus(); // 작성자칸으로 마우스 포커스가 잡히도록
+				return;
+			}
+
+			f.submit();
+
+		}
+	</script>
+</th:block>
+
+</html>
